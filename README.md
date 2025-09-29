@@ -70,7 +70,7 @@ It is a unified, closed-loop multi-agent system designed to automate and acceler
 - ......
 
 ## 🎉 Benchmark Results
-### 🚀  MLE-Bench: Record-Breaking Performance in Just 12 Hours!
+### 👨‍💻  MLE-Bench: Record-Breaking Performance in Just 12 Hours!
 
 InternAgent-MLE has achieved **36.44%** medal rate on the MLE-Bench, securing the **#1** position among all competing methods - and remarkably, this was accomplished in **only 12 hours** of running time!
 
