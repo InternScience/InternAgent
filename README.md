@@ -8,6 +8,7 @@ From One Idea to Autonomous Experimentation
 </div>
 
 ## 🔥 News
+  - <p style='text-align:justify'><i>2025.09.29</i>: &nbsp; 🔥 Our <b>deep research agent, InternAgent-DR</b>, demonstrates strong competitiveness across the GAIA, HLE, GPQA, and TRQA benchmarks, achieving state-of-the-art results on multiple tasks.
   - <p style='text-align:justify'><i>2025.09.12</i>: &nbsp; 🔥 Our latest <b>coding agent InternAgent-MLE</b> has achieved the championship in MLE-bench with <b>36.44%</b> medal rate, ranking <b>#1</b> among all competing methods, see details at <a href="https://github.com/openai/mle-bench">openai/mle-bench</a>. 
   - <p style='text-align:justify'><i>2025.08.06</i>: &nbsp; 🔥 InternAgent now supports Intern-S1 which combines strong general-task capabilities with state-of-the-art performance on a wide range of scientific tasks. Check <a href="https://internlm.intern-ai.org.cn/api/document">here</a> for how to use Intern-S1.
   - <p style='text-align:justify'><i>2025.07.17</i>: &nbsp; 🔥 The source code of InternAgent has been partially open-sourced. The complete version of InternAgent (covering 12 types of tasks for autonomous scientific research) will be open-sourced soon. This code repository can be used for full-cycle autonomous scientific research, ranging from hypothesis generation to automated experimental execution. It includes the source code for our initial version, covering paper retrieval, idea generation, coding, and experimental execution.
@@ -86,6 +87,26 @@ InternAgent-MLE has achieved **36.44%** medal rate on the MLE-Bench, securing th
 | OpenHands gpt-4o-2024-08-06 | 11.5 ± 3.4 | 2.2 ± 1.3 | 1.9 ± 1.9 | 5.1 ± 1.3 | 24 | 2024-10-08 
 | AIDE llama-3.1-405b-instruct | 8.3 ± 2.6 | 1.2 ± 0.8 | 0.0 ± 0.0 | 3.1 ± 0.9 | 24 | 2024-10-08 
 | MLAB gpt-4o-2024-08-06 | 4.2 ± 1.5 | 0.0 ± 0.0 | 0.0 ± 0.0 | 1.3 ± 0.5 |  24 | 2024-10-08 
+
+### 🧪  GAIA, GPQA-diamond and HLE benchmarks  
+We benchmark InternAgent-DR on a series of benchmarks, including GAIA, HLE and GPQA, and achieved SOTA results.
+
+| Model/Framework | GAIA Avg | GPQA Avg | HLE text only | HLE All |
+|-----------------|----------|----------|---------------|---------|
+| Intern-S1 | 15.15 | 78.26 | 8.90 | 8.30 |
+| Deepseek-R1 | 18.78 | 82.32 | 8.60 | - |
+| o4-mini | 16.97 | 78.28 | 14.50 | 14.28 |
+| GPT-5 | - | _85.35_ | 25.85 | 24.76 |
+| OpenAI DR | 67.36 | - | - | 26.60 |
+| Manus | 73.30 | - | - | - |
+| Gemini Deep Research | - | - | - | 26.90 |
+| MiroFlow | _74.50_ | - | 29.50 | 27.20 |
+| OWL | 69.70 | - | - | - |
+| X-Masters | - | - | **32.10** | _27.72_ |
+| InternAgent-DR (Qwen-235B) | 58.79 | 66.16 | 15.04 | 14.84 |
+| InternAgent-DR (o4-mini) | **76.96** | **87.37** | _31.60_ | **30.80** |
+
+
 
 
 ## 🚀 How to use the early version, Dolphin?
