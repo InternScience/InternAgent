@@ -81,7 +81,41 @@ agent = DRAgent(model='o4-mini', config_path='path/to/my_config.yaml')
 
 ### API Keys and Environment Setup
 
-The DR module uses five search tools. Required keys depend on which tools are enabled.
+The bundled DR configs use `auto_web_search` alongside the academic search and
+URL-processing tools. With no web-search credentials, this enables free web
+search and page excerpts through [Parallel Search MCP](https://docs.parallel.ai/integrations/mcp/search-mcp).
+Search uses Fast mode; no Parallel account or API key is required. Anonymous use
+has service-managed rate limits, and errors are returned to the agent.
+
+Automatic selection prefers existing `VOLC_SEARCH_API_KEY`, then `SERPER_API_KEY`,
+then `TAVILY_API_KEY` credentials. It never switches providers after a selected
+provider fails. Existing configs that explicitly enable `volc_search`,
+`web_search`, or `tavily_search` keep those selections. Volcengine-specific image
+search and generated summaries remain available through `volc_search`.
+
+To select a provider explicitly, set `tools.web_search_provider` to `parallel`,
+`volc`, `serper`, or `tavily` wherever `auto_web_search` is enabled. For example,
+in `global_execution.execution` of your DR config:
+
+```yaml
+tools:
+  enabled_tools:
+    - "auto_web_search"
+    - "arxiv_search"
+  web_search_provider: "parallel"
+```
+
+The Parallel selection exposes `search_parallel` and `fetch_parallel` to the
+agent. Search returns source URLs and excerpts; fetch accepts an HTTP(S) URL and
+an optional question to focus its excerpts. Both feed the normal citation
+manager. A research workflow reuses one opaque session identifier across its
+searches, fetches and worker threads; a new workflow run gets a new identifier.
+You can also opt in with the `parallel_search` tool category in a saved config.
+
+Remove `auto_web_search` and `parallel_search` from an enabled tool list to
+disable this integration. An empty `enabled_tools` list loads no tools;
+`agents.dr.enabled: false` still disables background DR entirely. Required keys
+for the other tools depend on which ones are enabled:
 
 #### `arxiv_search`
 Searches preprints on arXiv. No API key required.

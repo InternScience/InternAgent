@@ -15,6 +15,7 @@ from agents.task.execution_agent import ExecutionAgent
 from models import get_model
 from utils.logger import get_logger, get_node_logger
 from utils.prompt_loader import load_prompt
+from utils.search_context import search_run
 
 # Strategy-Procedural Memory (SPM, paper Sec. 2.4.1) write-back — optional.
 # Imported lazily/safely so the DR path still runs when the agent_kb package or
@@ -128,6 +129,7 @@ class TaskWorkflow(BaseAgent):
         else:
             logger.info(f"TaskWorkflow set node_id: {node_id}")
     
+    @search_run()
     def execute(self, task_input: Dict[str, Any], use_planner: bool = True) -> Dict[str, Any]:
         """
         执行完整的工作流

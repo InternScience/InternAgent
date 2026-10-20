@@ -22,7 +22,7 @@ global_planner:
       - "arxiv_search"
       - "openalex_search"
       - "crossref_search"
-      - "volc_search"
+      - "auto_web_search"
       - "url_processor"
 
 global_execution:
@@ -39,7 +39,7 @@ global_execution:
         - "arxiv_search"
         - "openalex_search"
         - "crossref_search"
-        - "volc_search"
+        - "auto_web_search"
         - "url_processor"
   execution:
     # SPM retrieval switch (read by ExecutionAgent); env `need_memory` overrides.
@@ -50,7 +50,7 @@ global_execution:
         - "arxiv_search"
         - "openalex_search"
         - "crossref_search"
-        - "volc_search"
+        - "auto_web_search"
         - "url_processor"
 
 coordinator:
@@ -60,7 +60,7 @@ coordinator:
       - "arxiv_search"
       - "openalex_search"
       - "crossref_search"
-      - "volc_search"
+      - "auto_web_search"
       - "url_processor"
 
 synthesizer:
@@ -75,7 +75,7 @@ tools:
     - "arxiv_search"
     - "openalex_search"
     - "crossref_search"
-    - "volc_search"
+    - "auto_web_search"
     - "url_processor"
 
 log:

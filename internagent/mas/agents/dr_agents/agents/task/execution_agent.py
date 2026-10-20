@@ -10,6 +10,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(
 from agents.base_agent import BaseAgent
 from models import get_model
 from tools import get_tool_manager
+from utils.search_context import search_run
 from utils.reference_manager import ReferenceManager
 from utils.logger import get_logger
 from utils.prompt_loader import load_prompt
@@ -210,6 +211,7 @@ class ExecutionAgent(BaseAgent):
                 "summary": f"Execution failed: {str(e)}"
             }
     
+    @search_run()
     def execute(self, subtask: str, context: Dict[str, Any], use_planner: bool = True, query = None) -> Dict[str, Any]:
         """
         执行单个子任务，包含工具调用循环, 以及最后的总结
@@ -649,6 +651,8 @@ class ExecutionAgent(BaseAgent):
             return result
         except Exception as e:
             self._logger.error(f"Tool execution failed for {function_name}: {e}")
+            if function_name in ("search_parallel", "fetch_parallel"):
+                raise
             return f"Error executing {function_name}: {str(e)}"
     
     def _generate_summary(self, results: List[Dict[str, Any]]) -> str:
@@ -1006,7 +1010,8 @@ class ExecutionAgent(BaseAgent):
         # 搜索工具列表：提取reference的工具
         allowed_tools = ['search_wiki', 'search_and_summarize_papers', 'search_and_summarize_webpages',
                          'search_tavily', 'search_volc', 'search_google',
-                         'search_arxiv', 'search_openalex', 'search_crossref']
+                         'search_arxiv', 'search_openalex', 'search_crossref',
+                         'search_parallel', 'fetch_parallel']
         return tool_name in allowed_tools
     
     
@@ -1080,7 +1085,8 @@ class ExecutionAgent(BaseAgent):
                                 self._logger.info(f"添加URL到参考文献: {tag} -> {url} (paper)")
                     modified_result = result  # list已经被直接修改
 
-            elif tool_name in ('search_and_summarize_webpages', 'search_volc', 'search_tavily', 'search_google'):
+            elif tool_name in ('search_and_summarize_webpages', 'search_volc', 'search_tavily', 'search_google',
+                               'search_parallel', 'fetch_parallel'):
                 # 这些工具都返回 list，每个元素是 dict，包含 url 和 title
                 if isinstance(result, list):
                     for item in result:

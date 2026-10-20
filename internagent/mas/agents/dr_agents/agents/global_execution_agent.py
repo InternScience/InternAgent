@@ -7,6 +7,7 @@ import re
 from typing import Any, Dict, List, Optional, Union, Set
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import threading
+from contextvars import copy_context
 
 # 导入日志模块
 from utils.logger import get_logger
@@ -168,7 +169,7 @@ class GlobalExecutionAgent(BaseAgent):
         with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
             # 提交所有任务
             future_to_node = {
-                executor.submit(self._execute_single_node, node_id, context, query = query, file_path = file_path): node_id
+                executor.submit(copy_context().run, self._execute_single_node, node_id, context, query = query, file_path = file_path): node_id
                 for node_id in node_ids
             }
             

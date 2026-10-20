@@ -22,6 +22,7 @@ from agents.coordinator_agent import CoordinatorAgent
 from agents.synthesizer_agent import SynthesizerAgent
 from utils.graph import DirectedGraph, NodeExecutionStatus
 
+from utils.search_context import search_run
 from utils.logger import get_logger
 logger = get_logger("main")
 
@@ -128,6 +129,7 @@ class Workflow(BaseAgent):
         except Exception as e:
             logger.error(f"Failed to save synthesizer input: {e}")
 
+    @search_run()
     def execute(self, task, file_path = None, task_id = None, save_synthesizer_input = False, timestamp = None):
         """
         执行工作流

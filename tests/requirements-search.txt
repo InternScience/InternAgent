@@ -1,0 +1,16 @@
+# Focused DR caller tests, using the project's pinned dependency versions.
+# No GPU, OCR, browser or chemistry packages are needed for these tests.
+-c ../requirements.txt
+anyio
+httpx
+json-repair
+mcp
+openai
+pydantic
+pydantic-settings
+python-dotenv
+PyYAML
+redis
+requests
+sse-starlette
+starlette

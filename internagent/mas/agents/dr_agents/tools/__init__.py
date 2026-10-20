@@ -6,6 +6,8 @@ import os
 import importlib
 import sys
 import asyncio
+from contextvars import copy_context
+from types import SimpleNamespace
 from typing import Dict, Any, Callable
 
 # 导入日志模块
@@ -129,13 +131,39 @@ class ToolManager:
                 self.logger.info("配置中 tools.enabled_tools 为空，不加载任何工具")
                 return
                 
-            # 导入本地工具模块
-            import tool_integration
-            import our_tools
-            
-            # 获取本地工具列表
-            if hasattr(tool_integration, 'construct_agent_list'):
-                local_tools_list = tool_integration.construct_agent_list(config=self.config)
+            # Resolve the bundled automatic category without changing saved
+            # explicit categories or falling back after a selected provider fails.
+            from dotenv import load_dotenv
+            from tools.parallel_search import (
+                resolve_search_provider, search_parallel, fetch_parallel,
+            )
+            load_dotenv(override=True)
+            legacy_tools = [name for name in enabled_tools
+                            if name not in ("auto_web_search", "parallel_search")]
+            use_parallel = "parallel_search" in enabled_tools
+            if "auto_web_search" in enabled_tools:
+                provider = resolve_search_provider(self.config)
+                if provider == "parallel":
+                    use_parallel = True
+                else:
+                    category = {"volc": "volc_search", "serper": "web_search",
+                                "tavily": "tavily_search"}[provider]
+                    legacy_tools.append(category)
+
+            local_tools_list = []
+            if use_parallel:
+                local_tools_list.extend(SimpleNamespace(func=func) for func in
+                                        (search_parallel, fetch_parallel))
+            if legacy_tools:
+                import tool_integration
+                legacy_config = {**self.config, "tools": {
+                    **self.config.get("tools", {}), "enabled_tools": legacy_tools,
+                }}
+                local_tools_list.extend(
+                    tool_integration.construct_agent_list(config=legacy_config)
+                )
+
+            if local_tools_list:
                 # our_tools_list = our_tools.construct_our_tools()
                 # local_tools_list.extend(our_tools_list)
                 
@@ -301,7 +329,7 @@ class ToolManager:
 
                     executor = concurrent.futures.ThreadPoolExecutor(max_workers=1)
                     try:
-                        future = executor.submit(run_async_func)
+                        future = executor.submit(copy_context().run, run_async_func)
                         # 外层不要给 result 再设 timeout；让内部 wait_for 控制
                         return future.result()
                     except asyncio.TimeoutError:
@@ -428,7 +456,9 @@ def get_tool_manager(mode: str = "local", config: Dict[str, Any] = None) -> Tool
         
         config_changed = (
             tool_manager.mode != mode or 
-            current_tools != new_tools
+            current_tools != new_tools or
+            current_config.get('tools', {}).get('web_search_provider', 'auto') !=
+            config.get('tools', {}).get('web_search_provider', 'auto')
         )
     
         # 如果模式或配置改变，重新创建工具管理器
